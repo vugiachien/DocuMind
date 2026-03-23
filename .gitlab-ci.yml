@@ -1,0 +1,117 @@
+stages:
+  - build
+  - deploy
+
+variables:
+  REGISTRY: $CI_REGISTRY
+  IMAGE_PREFIX: $REGISTRY/ai_team/demo-contract-review
+  DOCKER_HOST: tcp://docker:2375
+  DOCKER_TLS_CERTDIR: ""
+  DOCKER_DRIVER: overlay2
+  DOCKER_BUILDKIT: "1"
+
+# ─── Build jobs (parallel) ────────────────────────────────────────────────────
+.build_template: &build_template
+  stage: build
+  image: docker:24
+  services:
+    - docker:24-dind
+  before_script:
+    - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $REGISTRY
+  tags:
+    - docker
+  retry:
+    max: 2
+    when:
+      - runner_system_failure
+      - script_failure
+  only:
+    - develop
+
+build-backend:
+  <<: *build_template
+  script:
+    - docker pull $IMAGE_PREFIX/backend:latest || true
+    - docker build
+        --network host
+        --build-arg BUILDKIT_INLINE_CACHE=1
+        --cache-from $IMAGE_PREFIX/backend:latest
+        -t $IMAGE_PREFIX/backend:$CI_COMMIT_SHORT_SHA
+        -t $IMAGE_PREFIX/backend:latest
+        ./backend
+    - docker push $IMAGE_PREFIX/backend:$CI_COMMIT_SHORT_SHA
+    - docker push $IMAGE_PREFIX/backend:latest
+
+build-ai-service:
+  <<: *build_template
+  script:
+    - docker pull $IMAGE_PREFIX/ai-service:latest || true
+    - docker build
+        --network host
+        --build-arg BUILDKIT_INLINE_CACHE=1
+        --cache-from $IMAGE_PREFIX/ai-service:latest
+        -t $IMAGE_PREFIX/ai-service:$CI_COMMIT_SHORT_SHA
+        -t $IMAGE_PREFIX/ai-service:latest
+        ./ai-services
+    - docker push $IMAGE_PREFIX/ai-service:$CI_COMMIT_SHORT_SHA
+    - docker push $IMAGE_PREFIX/ai-service:latest
+
+build-frontend:
+  <<: *build_template
+  script:
+    - docker pull $IMAGE_PREFIX/frontend:latest || true
+    - docker build
+        --network host
+        --build-arg BUILDKIT_INLINE_CACHE=1
+        --cache-from $IMAGE_PREFIX/frontend:latest
+        --build-arg VITE_API_URL=/api/v1
+        -t $IMAGE_PREFIX/frontend:$CI_COMMIT_SHORT_SHA
+        -t $IMAGE_PREFIX/frontend:latest
+        ./frontend
+    - docker push $IMAGE_PREFIX/frontend:$CI_COMMIT_SHORT_SHA
+    - docker push $IMAGE_PREFIX/frontend:latest
+
+# ─── Deploy ───────────────────────────────────────────────────────────────────
+deploy-dev:
+  stage: deploy
+  image: alpine:3.19
+  variables:
+    SSH_PORT: "${DEV_SERVER_PORT:-22}"
+  before_script:
+    - apk add --no-cache sshpass openssh-client rsync
+    - mkdir -p ~/.ssh
+    - ssh-keyscan -p ${DEV_SERVER_PORT:-22} $DEV_SERVER_HOST >> ~/.ssh/known_hosts
+    - chmod 644 ~/.ssh/known_hosts
+  script:
+    # Đảm bảo thư mục tồn tại trên server
+    - sshpass -p "$DEV_SERVER_PASSWORD"
+        ssh -p ${DEV_SERVER_PORT:-22} $DEV_SERVER_USER@$DEV_SERVER_HOST
+        "mkdir -p ~/demo-contract-review"
+
+    # Copy docker-compose.prod.yml và deploy.sh lên server
+    - sshpass -p "$DEV_SERVER_PASSWORD"
+        rsync -avz -e "ssh -p ${DEV_SERVER_PORT:-22}"
+        docker-compose.prod.yml deploy.sh
+        $DEV_SERVER_USER@$DEV_SERVER_HOST:~/demo-contract-review/
+
+    # Chạy deploy script trên server
+    - sshpass -p "$DEV_SERVER_PASSWORD"
+        ssh -p ${DEV_SERVER_PORT:-22} $DEV_SERVER_USER@$DEV_SERVER_HOST
+        "chmod +x ~/demo-contract-review/deploy.sh &&
+         IMAGE_TAG=$CI_COMMIT_SHORT_SHA
+         REGISTRY=$REGISTRY
+         IMAGE_PREFIX=$IMAGE_PREFIX
+         CI_REGISTRY_USER=$CI_REGISTRY_USER
+         CI_REGISTRY_PASSWORD=$CI_REGISTRY_PASSWORD
+         OPENAI_API_KEY=$OPENAI_API_KEY
+         MINIO_ACCESS_KEY=$MINIO_ACCESS_KEY
+         MINIO_SECRET_KEY=$MINIO_SECRET_KEY
+         EXTERNAL_AI_API_KEY=$EXTERNAL_AI_API_KEY
+         ~/demo-contract-review/deploy.sh"
+  environment:
+    name: dev
+    url: http://10.22.4.140:5174
+  tags:
+    - docker
+  only:
+    - develop
