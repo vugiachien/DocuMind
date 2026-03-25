@@ -1,0 +1,89 @@
+services:
+  # Database
+  postgres:
+    image: postgres:15-alpine
+    container_name: documind_postgres
+    restart: always
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: documind_db
+    ports:
+      - "5436:5432"
+    volumes:
+      - documind_postgres_data:/var/lib/postgresql/data
+    networks:
+      - documind_net
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U user -d documind_db" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    container_name: documind_redis
+    restart: always
+    ports:
+      - "6390:6379"
+    volumes:
+      - documind_redis_data:/data
+    networks:
+      - documind_net
+    healthcheck:
+      test: [ "CMD", "redis-cli", "ping" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Backend API (Monolithic with AI)
+  backend:
+    build: ./backend
+    container_name: documind_backend
+    restart: always
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgresql://user:password@postgres:5432/documind_db
+      REDIS_URL: redis://redis:6379/0
+      CELERY_BROKER_URL: redis://redis:6379/0
+      OPENAI_API_KEY: ${OPENAI_API_KEY}
+      OPENAI_API_BASE: ${OPENAI_API_BASE}
+      OPENAI_MODEL: ${OPENAI_MODEL}
+      OPENAI_API_KEY_OAUTH: ${OPENAI_API_KEY_OAUTH}
+      OPENAI_API_BASE_OAUTH: ${OPENAI_API_BASE_OAUTH}
+      OPENAI_MODEL_OAUTH: ${OPENAI_MODEL_OAUTH}
+      OPENAI_API_KEY_CLOUD: ${OPENAI_API_KEY_CLOUD}
+      OPENAI_API_BASE_CLOUD: ${OPENAI_API_BASE_CLOUD}
+      OPENAI_MODEL_CLOUD: ${OPENAI_MODEL_CLOUD}
+    ports:
+      - "8012:8000"
+    volumes:
+      - ./backend/uploads:/app/uploads
+      - ./backend/chroma_data:/app/chroma_data
+    networks:
+      - documind_net
+
+  # Frontend UI
+  frontend:
+    build:
+      context: ./frontend
+      args:
+        VITE_API_URL: /api/v1
+    container_name: documind_frontend
+    restart: always
+    ports:
+      - "5175:80"
+    networks:
+      - documind_net
+
+volumes:
+  documind_postgres_data:
+  documind_redis_data:
+
+networks:
+  documind_net:
+    driver: bridge

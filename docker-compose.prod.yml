@@ -1,0 +1,119 @@
+# docker-compose.prod.yml
+# Dùng trên server — pull images từ GitLab Container Registry
+# Không build local, không expose debug ports
+#
+# Cách dùng:
+#   IMAGE_TAG=abc1234 docker compose -f docker-compose.prod.yml up -d
+
+x-image-prefix: &image-prefix ${IMAGE_PREFIX:-git.haui.vn:5050/vugiachien/DocuMind}
+x-image-tag: &image-tag ${IMAGE_TAG:-latest}
+
+services:
+  # ── Infrastructure ──────────────────────────────────────
+  postgres:
+    image: postgres:15-alpine
+    container_name: documind_postgres
+    restart: always
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: documind_db
+    volumes:
+      - documind_postgres_data:/var/lib/postgresql/data
+    networks:
+      - documind_net
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U user -d documind_db" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    container_name: documind_redis
+    restart: always
+    volumes:
+      - documind_redis_data:/data
+    networks:
+      - documind_net
+    healthcheck:
+      test: [ "CMD", "redis-cli", "ping" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ── Application ─────────────────────────────────────────
+  backend:
+    image: ${IMAGE_PREFIX:-git.haui.vn:5050/vugiachien/DocuMind}/backend:${IMAGE_TAG:-latest}
+    container_name: documind_backend
+    restart: always
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgresql://user:password@postgres:5432/documind_db
+      OPENAI_API_KEY: ${OPENAI_API_KEY}
+      OPENAI_API_BASE: ${OPENAI_API_BASE}
+      OPENAI_MODEL: ${OPENAI_MODEL}
+      OPENAI_API_KEY_OAUTH: ${OPENAI_API_KEY_OAUTH}
+      OPENAI_API_BASE_OAUTH: ${OPENAI_API_BASE_OAUTH}
+      OPENAI_MODEL_OAUTH: ${OPENAI_MODEL_OAUTH}
+      OPENAI_API_KEY_CLOUD: ${OPENAI_API_KEY_CLOUD}
+      OPENAI_API_BASE_CLOUD: ${OPENAI_API_BASE_CLOUD}
+      OPENAI_MODEL_CLOUD: ${OPENAI_MODEL_CLOUD}
+      REDIS_URL: redis://redis:6379/0
+      CELERY_BROKER_URL: redis://redis:6379/0
+      SECRET_KEY: ${SECRET_KEY:-CsQNIv-VRbTMlJSc5Seyja4C_9ossP3nvUt-_dwbaI}
+      ENVIRONMENT: production
+    ports:
+      - "8012:8000"
+    volumes:
+      - ./backend/uploads:/app/uploads
+      - ./backend/chroma_data:/app/chroma_data
+    networks:
+      - documind_net
+
+  worker:
+    image: ${IMAGE_PREFIX:-git.haui.vn:5050/vugiachien/DocuMind}/backend:${IMAGE_TAG:-latest}
+    container_name: documind_worker
+    restart: always
+    command: celery -A app.celery_app worker --loglevel=info --concurrency=2
+    depends_on:
+      redis:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgresql://user:password@postgres:5432/documind_db
+      CELERY_BROKER_URL: redis://redis:6379/0
+      REDIS_URL: redis://redis:6379/0
+      OPENAI_API_KEY: ${OPENAI_API_KEY}
+      OPENAI_API_BASE: ${OPENAI_API_BASE}
+      OPENAI_MODEL: ${OPENAI_MODEL}
+      OPENAI_API_KEY_OAUTH: ${OPENAI_API_KEY_OAUTH}
+      OPENAI_API_BASE_OAUTH: ${OPENAI_API_BASE_OAUTH}
+      OPENAI_MODEL_OAUTH: ${OPENAI_MODEL_OAUTH}
+      OPENAI_API_KEY_CLOUD: ${OPENAI_API_KEY_CLOUD}
+      OPENAI_API_BASE_CLOUD: ${OPENAI_API_BASE_CLOUD}
+      OPENAI_MODEL_CLOUD: ${OPENAI_MODEL_CLOUD}
+    networks:
+      - documind_net
+
+  frontend:
+    image: ${IMAGE_PREFIX:-git.haui.vn:5050/vugiachien/DocuMind}/frontend:${IMAGE_TAG:-latest}
+    container_name: documind_frontend
+    restart: always
+    ports:
+      - "5175:80"
+    networks:
+      - documind_net
+
+volumes:
+  documind_postgres_data:
+  documind_redis_data:
+
+networks:
+  documind_net:
+    driver: bridge
