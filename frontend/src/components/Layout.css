@@ -1,0 +1,396 @@
+/* ── Layout.css — extracted from Layout.tsx inline styles ── */
+
+/* Notification dropdown container */
+.notif-dropdown {
+    width: 400px;
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 20px 60px -15px rgba(0, 0, 0, 0.15), 0 0 0 1px rgba(0, 0, 0, 0.03);
+    max-height: 520px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.notif-header {
+    padding: 18px 20px;
+    border-bottom: 1px solid #f0f0f0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: linear-gradient(135deg, #fafbff 0%, #f5f7ff 100%);
+}
+
+.notif-header-left {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.notif-header h4 {
+    margin: 0;
+    color: #1a1a2e;
+    font-size: 16px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+}
+
+.notif-badge {
+    background: linear-gradient(135deg, #4318FF, #7B5AFF);
+    color: white;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 12px;
+    line-height: 1.4;
+}
+
+.notif-mark-all-btn {
+    background: none;
+    border: none;
+    color: #4318FF;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    padding: 4px 10px;
+    border-radius: 6px;
+    transition: all 0.2s;
+}
+
+.notif-mark-all-btn:hover {
+    background: #f0ecff;
+    color: #3311CC;
+}
+
+.notif-body {
+    overflow-y: auto;
+    flex: 1;
+    max-height: 420px;
+}
+
+/* Custom scrollbar */
+.notif-body::-webkit-scrollbar {
+    width: 4px;
+}
+.notif-body::-webkit-scrollbar-track {
+    background: transparent;
+}
+.notif-body::-webkit-scrollbar-thumb {
+    background: #ddd;
+    border-radius: 4px;
+}
+.notif-body::-webkit-scrollbar-thumb:hover {
+    background: #bbb;
+}
+
+/* Notification item — flexbox icon + content layout */
+.notif-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 14px 20px;
+    border-bottom: 1px solid #f5f5f5;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    position: relative;
+}
+
+.notif-item:last-child {
+    border-bottom: none;
+}
+
+.notif-item:hover {
+    background: #f8f9fc;
+}
+
+.notif-item--unread {
+    background: #f6f4ff;
+    border-left: 3px solid #4318FF;
+    padding-left: 17px;
+}
+
+.notif-item--unread:hover {
+    background: #eee9ff;
+}
+
+.notif-item--read {
+    background: white;
+    border-left: 3px solid transparent;
+    padding-left: 17px;
+}
+
+/* Type icons */
+.notif-item-icon {
+    flex-shrink: 0;
+    padding-top: 2px;
+}
+
+.notif-icon {
+    font-size: 20px;
+}
+
+.notif-icon--success {
+    color: #22c55e;
+}
+
+.notif-icon--error {
+    color: #ef4444;
+}
+
+.notif-icon--warning {
+    color: #f59e0b;
+}
+
+.notif-icon--info {
+    color: #3b82f6;
+}
+
+/* Content area */
+.notif-item-content {
+    flex: 1;
+    min-width: 0;
+}
+
+.notif-item-title {
+    font-size: 13.5px;
+    color: #374151;
+    margin-bottom: 3px;
+    line-height: 1.4;
+}
+
+.notif-item-title--bold {
+    font-weight: 600;
+    color: #111827;
+}
+
+.notif-item-msg {
+    color: #6b7280;
+    font-size: 12.5px;
+    margin-bottom: 6px;
+    line-height: 1.5;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    word-break: break-word;
+}
+
+.notif-item-time {
+    font-size: 11.5px;
+    color: #9ca3af;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+/* Unread dot — animated pulse */
+.notif-unread-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #4318FF;
+    box-shadow: 0 0 0 3px rgba(67, 24, 255, 0.15);
+    flex-shrink: 0;
+    margin-top: 8px;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+    animation: notif-pulse 2s infinite;
+}
+
+.notif-unread-dot:hover {
+    transform: scale(1.3);
+    box-shadow: 0 0 0 4px rgba(67, 24, 255, 0.25);
+}
+
+@keyframes notif-pulse {
+    0%, 100% { box-shadow: 0 0 0 3px rgba(67, 24, 255, 0.15); }
+    50% { box-shadow: 0 0 0 5px rgba(67, 24, 255, 0.08); }
+}
+
+/* Empty state */
+.notif-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 48px 20px;
+    color: #9ca3af;
+}
+
+.notif-empty-icon {
+    font-size: 40px;
+    color: #d1d5db;
+    margin-bottom: 12px;
+}
+
+.notif-empty p {
+    margin: 0;
+    font-size: 14px;
+    color: #9ca3af;
+}
+
+/* User profile dropdown */
+.user-dropdown {
+    width: 280px;
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    display: flex;
+    flex-direction: column;
+    padding: 16px;
+}
+
+.user-dropdown-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.user-dropdown-avatar {
+    background-color: #11047A;
+    color: white;
+    flex-shrink: 0;
+}
+
+.user-dropdown-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    flex: 1;
+    min-width: 0;
+}
+
+.user-dropdown-name {
+    font-size: 14px;
+    font-weight: 600;
+    color: #2B3674;
+    line-height: 1.4;
+}
+
+.user-dropdown-email {
+    font-size: 12px;
+    color: #707EAE;
+}
+
+.user-dropdown-btn {
+    color: #2B3674;
+    padding: 8px 0;
+    width: 100%;
+    text-align: left;
+    height: auto;
+    margin-bottom: 4px;
+}
+
+.user-dropdown-btn--logout {
+    color: #E31A1A;
+    padding: 8px 0;
+    width: 100%;
+    text-align: left;
+    height: auto;
+}
+
+/* Sider / Sidebar */
+.layout-sider {
+    background-color: #ffffff;
+    border-right: none;
+    position: fixed;
+    height: 100vh;
+    left: 0;
+    z-index: 100;
+    box-shadow: 14px 17px 40px 4px rgba(112, 144, 176, 0.08);
+}
+
+.layout-logo-wrap {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 30px;
+}
+
+.layout-logo-wrap--collapsed {
+    justify-content: center;
+}
+
+.layout-logo-icon {
+    width: 40px;
+    height: 40px;
+    background: linear-gradient(135deg, #4318FF 0%, #6AD2FF 100%);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: bold;
+    font-size: 20px;
+    flex-shrink: 0;
+}
+
+/* Header */
+.layout-header {
+    padding: 24px 32px;
+    background: transparent;
+    height: auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 10px;
+}
+
+.layout-header-left {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.layout-collapse-btn {
+    font-size: 18px;
+    width: 40px;
+    height: 40px;
+    color: #2B3674;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    background: #ffffff;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.layout-header-right {
+    background: #ffffff;
+    padding: 10px;
+    border-radius: 30px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    box-shadow: 14px 17px 40px 4px rgba(112, 144, 176, 0.08);
+}
+
+.layout-search-input {
+    background: #F4F7FE;
+    border-radius: 30px;
+    width: 200px;
+    color: #2B3674;
+}
+
+.layout-avatar {
+    background-color: #11047A;
+    color: white;
+    cursor: pointer;
+}
+
+/* Logo container (sidebar top section) */
+.layout-logo-container {
+    padding: 32px 24px;
+    text-align: center;
+}
+
+.layout-logo-container--collapsed {
+    padding: 32px 8px;
+}
+
+/* Light-weight brand name suffix */
+.layout-brand-light {
+    font-weight: 400;
+}
