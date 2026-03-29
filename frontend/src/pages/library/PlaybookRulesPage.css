@@ -1,0 +1,109 @@
+/* ── PlaybookRulesPage.css ── */
+
+.expandable-text-wrap {
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: normal;
+    color: var(--expandable-color, inherit);
+}
+
+.expandable-text-wrap--italic {
+    font-style: italic;
+}
+
+.expandable-text-inner {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+}
+
+.expandable-text-inner--expanded {
+    display: block;
+    overflow: visible;
+    max-height: none;
+}
+
+.expandable-text-inner--collapsed {
+    -webkit-line-clamp: 2;
+}
+
+/* Loading spinner wrapper */
+.page-loading-center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+/* Page wrapper */
+.playbook-rules-page {
+    padding: 0;
+}
+
+/* Header bar */
+.playbook-rules-header {
+    margin-bottom: 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* Table cell helpers */
+.table-no-cell {
+    font-size: 13px;
+}
+
+.table-rule-name {
+    font-weight: 500;
+}
+
+.table-clause-cell {
+    text-align: justify;
+    background: #fafafa;
+    padding: 8px;
+    border-radius: 4px;
+    border: 1px solid #f0f0f0;
+}
+
+.table-copy-btn {
+    margin-top: 4px;
+    font-size: 11px;
+    color: #8c8c8c;
+}
+
+.table-description-cell {
+    font-size: 13px;
+    color: #595959;
+    text-align: justify;
+}
+
+/* Severity cell */
+.severity-cell {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.severity-tag {
+    font-weight: 600;
+    min-width: 60px;
+    text-align: center;
+    margin: 0;
+}
+
+.severity-edit-btn {
+    color: #8c8c8c;
+}
+
+/* Playbook card */
+.playbook-rules-card {
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+/* Select dropdown in severity edit */
+.severity-select {
+    width: 80px;
+}
