@@ -1,0 +1,68 @@
+services:
+  # Database
+  postgres:
+    image: postgres:15-alpine
+    container_name: demo_cr_postgres
+    restart: always
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: demo_contract_db
+    ports:
+      - "5435:5432"
+    volumes:
+      - demo_postgres_data:/var/lib/postgresql/data
+    networks:
+      - demo_contract_net
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U user -d demo_contract_db" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Backend API (Now Monolithic with AI)
+  backend:
+    build: ./backend
+    container_name: demo_cr_backend
+    restart: always
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgresql://user:password@postgres:5432/demo_contract_db
+      OPENAI_API_KEY: ${OPENAI_API_KEY}
+      OPENAI_API_BASE: ${OPENAI_API_BASE}
+      OPENAI_MODEL: ${OPENAI_MODEL}
+      OPENAI_API_KEY_OAUTH: ${OPENAI_API_KEY_OAUTH}
+      OPENAI_API_BASE_OAUTH: ${OPENAI_API_BASE_OAUTH}
+      OPENAI_MODEL_OAUTH: ${OPENAI_MODEL_OAUTH}
+      OPENAI_API_KEY_CLOUD: ${OPENAI_API_KEY_CLOUD}
+      OPENAI_API_BASE_CLOUD: ${OPENAI_API_BASE_CLOUD}
+      OPENAI_MODEL_CLOUD: ${OPENAI_MODEL_CLOUD}
+    ports:
+      - "8011:8000"
+    volumes:
+      - ./backend/uploads:/app/uploads
+      - ./backend/chroma_data:/app/chroma_data
+    networks:
+      - demo_contract_net
+
+  # Frontend UI
+  frontend:
+    build:
+      context: ./frontend
+      args:
+        VITE_API_URL: /api/v1
+    container_name: demo_cr_frontend
+    restart: always
+    ports:
+      - "5174:80"
+    networks:
+      - demo_contract_net
+
+volumes:
+  demo_postgres_data:
+
+networks:
+  demo_contract_net:
+    driver: bridge
