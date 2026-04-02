@@ -1,0 +1,360 @@
+/* ── ContractDetailPage.css ── */
+
+/* Shared expandable text */
+.expandable-text-wrap {
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: normal;
+    color: var(--expandable-color, inherit);
+}
+
+.expandable-text-wrap--italic {
+    font-style: italic;
+}
+
+.expandable-text-inner {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+}
+
+.expandable-text-inner--expanded {
+    display: block;
+    overflow: visible;
+    max-height: none;
+}
+
+.expandable-text-inner--collapsed {
+    -webkit-line-clamp: 2;
+}
+
+/* Loading & error states */
+.page-loading-center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.page-not-found {
+    padding: 24px;
+    text-align: center;
+}
+
+/* Page root */
+.contract-detail-page {
+    padding: 0;
+}
+
+/* Header bar */
+.contract-detail-header {
+    margin-bottom: 24px;
+    display: flex;
+    justify-content: space-between;
+}
+
+/* Title */
+.contract-title {
+    margin: 0;
+    color: #2B3674;
+}
+
+/* Template tag */
+.template-tag {
+    cursor: help;
+}
+
+/* Drawer: version history header */
+.drawer-version-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* Version item in Timeline */
+.version-item-row {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+}
+
+.version-item-content {
+    flex: 1;
+}
+
+.version-item-title-row {
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.version-item-date {
+    font-size: 12px;
+    color: #999;
+    margin-bottom: 4px;
+    margin-left: 20px;
+}
+
+.version-item-changes {
+    margin-bottom: 4px;
+    margin-left: 20px;
+}
+
+.version-item-version-label {
+    font-weight: bold;
+    margin-bottom: 4px;
+}
+
+/* Diff viewer — dynamic per-chunk styles */
+.diff-part--removed-changed {
+    background-color: #ffccc7;
+    color: #820014;
+    text-decoration: line-through;
+    font-weight: 600;
+}
+
+.diff-part--removed-ctx {
+    background-color: #fff1f0;
+    color: #a8071a;
+    text-decoration: line-through;
+    opacity: 0.6;
+}
+
+.diff-part--added-changed {
+    background-color: #b7eb8f;
+    color: #092b00;
+    border-bottom: 2px solid #389e0d;
+    font-weight: 600;
+}
+
+.diff-part--added-ctx {
+    background-color: #f6ffed;
+    color: #135200;
+}
+
+.diff-chunk--added {
+    background-color: #f6ffed;
+    color: #135200;
+    border-bottom: 2px solid #52c41a;
+}
+
+.diff-chunk--removed {
+    background-color: #fff1f0;
+    color: #a8071a;
+    text-decoration: line-through;
+    opacity: 0.6;
+}
+
+.diff-chunk--strikethrough {
+    background-color: #fff7e6;
+    color: #ad6800;
+    text-decoration: line-through;
+    font-style: italic;
+}
+
+.version-preview-box {
+    margin-top: 12px;
+    margin-left: 20px;
+    padding: 12px;
+    background: #fafafa;
+    border: 1px solid #d9d9d9;
+    border-radius: 4px;
+    font-size: 12px;
+    font-family: monospace;
+    white-space: pre-wrap;
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+.version-preview-meta {
+    margin-bottom: 8px;
+    font-size: 11px;
+    color: #999;
+}
+
+.version-actions {
+    margin-left: 20px;
+    margin-top: 8px;
+}
+
+.version-download-btn {
+    padding: 0;
+}
+
+/* Version type tags in timeline */
+.version-type-tag {
+    font-size: 10px;
+    line-height: 16px;
+}
+
+/* Diff modal */
+.diff-container {
+    background: #f0f2f5;
+    padding: 20px;
+    min-height: 100%;
+}
+
+.diff-legend {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 12px;
+    flex-wrap: wrap;
+    font-size: 12px;
+}
+
+.diff-legend-added-word {
+    background-color: #b7eb8f;
+    color: #092b00;
+    font-weight: 600;
+    padding: 1px 4px;
+    border-bottom: 2px solid #389e0d;
+}
+
+.diff-legend-added-ctx {
+    background-color: #f6ffed;
+    color: #135200;
+    padding: 1px 4px;
+}
+
+.diff-legend-removed-word {
+    background-color: #ffccc7;
+    color: #820014;
+    font-weight: 600;
+    text-decoration: line-through;
+    padding: 1px 4px;
+}
+
+.diff-legend-removed-ctx {
+    background-color: #fff1f0;
+    color: #a8071a;
+    text-decoration: line-through;
+    opacity: 0.6;
+    padding: 1px 4px;
+}
+
+.diff-document {
+    font-family: "Times New Roman", Times, serif;
+    font-size: 12pt;
+    white-space: pre-wrap;
+    line-height: 1.5;
+    max-width: 210mm;
+    margin: 0 auto;
+    padding: 20mm;
+    background: #fff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    min-height: 297mm;
+    color: #262626;
+}
+
+.diff-block {
+    margin-bottom: 0;
+    white-space: pre-wrap;
+}
+
+/* Edit suggestion modal */
+.edit-modal-original-label {
+    font-size: 12px;
+}
+
+.edit-modal-original-box {
+    padding: 8px;
+    background: #f5f5f5;
+    border-radius: 4px;
+    font-size: 13px;
+    margin-bottom: 16px;
+    color: #666;
+    max-height: 150px;
+    overflow-y: auto;
+}
+
+.edit-modal-suggested-label {
+    font-size: 12px;
+}
+
+.edit-modal-editor-wrap {
+    margin-top: 8px;
+    border: 1px solid #d9d9d9;
+    border-radius: 4px;
+}
+
+/* Law checkbox */
+.law-checkbox {
+    margin-top: 8px;
+}
+
+.law-checkbox-hint {
+    color: #888;
+}
+
+/* Tabs */
+.contract-tabs {
+    margin-top: 24px;
+}
+
+/* Info card */
+.contract-info-card {
+    margin-bottom: 24px;
+    border-radius: 12px;
+}
+
+/* Risk card header */
+.risk-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+
+/* Table cell helpers */
+.table-no-cell {
+    font-size: 13px;
+}
+
+.table-text-justify {
+    text-align: justify;
+}
+
+.table-risk-tag {
+    font-weight: 600;
+    font-size: 12px;
+}
+
+.table-type-tag {
+    font-weight: 600;
+    font-size: 11px;
+}
+
+.table-suggested-cell {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 8px;
+}
+
+.table-suggested-text {
+    flex: 1;
+    text-align: justify;
+}
+
+.table-manual-review-hint {
+    font-size: 11px;
+    color: #faad14;
+    margin-top: 4px;
+}
+
+.table-select-cell {
+    text-align: center;
+}
+
+/* Batch action bar */
+.batch-action-bar {
+    display: flex;
+    justifyContent: space-between;
+    align-items: center;
+    padding: 12px 16px;
+    background: #f6f8ff;
+    border-radius: 8px;
+    margin-bottom: 12px;
+}
