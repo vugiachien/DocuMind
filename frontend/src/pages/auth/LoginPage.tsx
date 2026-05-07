@@ -3,10 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import './LoginPage.css';
 
-const SOCIAL_PROVIDERS = [
-    { name: 'Google', label: 'Continue with Google' },
-    { name: 'Microsoft', label: 'Continue with Microsoft' },
-] as const;
+
 
 const LoginPage: React.FC = () => {
     const [username, setUsername] = useState('');
@@ -32,9 +29,7 @@ const LoginPage: React.FC = () => {
         }
     };
 
-    const handleSocialLogin = (provider: string) => {
-        console.log('[v0] Social login with:', provider);
-    };
+
 
     return (
         <div className="login-page">
@@ -103,13 +98,6 @@ const LoginPage: React.FC = () => {
                                 <label className="login-field__label" htmlFor="password">
                                     Password
                                 </label>
-                                <button
-                                    type="button"
-                                    className="login-field__link"
-                                    onClick={() => console.log('[v0] Forgot password clicked')}
-                                >
-                                    Forgot password?
-                                </button>
                             </div>
                             <input
                                 id="password"
@@ -132,23 +120,7 @@ const LoginPage: React.FC = () => {
                         </button>
                     </form>
 
-                    <div className="login-divider">
-                        <span>Alternative access</span>
-                    </div>
 
-                    <div className="login-socials">
-                        {SOCIAL_PROVIDERS.map((provider) => (
-                            <button
-                                key={provider.name}
-                                type="button"
-                                className="login-social"
-                                onClick={() => handleSocialLogin(provider.name)}
-                            >
-                                <span className="login-social__icon">{provider.name.charAt(0)}</span>
-                                <span>{provider.label}</span>
-                            </button>
-                        ))}
-                    </div>
                 </section>
             </div>
         </div>
