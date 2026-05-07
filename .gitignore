@@ -139,3 +139,5 @@ fix.md
 
 # GitLab CI (not used - GitHub only)
 .gitlab-ci.yml
+rewrite_history.sh
+backend/app/db/*.db
