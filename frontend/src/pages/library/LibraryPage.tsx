@@ -234,7 +234,7 @@ const PlaybookSection: React.FC<PlaybookSectionProps> = ({ docType, title, uploa
                                         style={{ cursor: 'pointer', color: '#667085', textDecoration: 'underline', textDecorationColor: 'rgba(198,198,205,0.4)', textUnderlineOffset: '4px' }}
                                         onClick={() => navigate(`/library/rules/${record.id}`)}
                                     >
-                                        {displayCount} Rules ↗
+                                        {displayCount} Rules
                                     </span>
                                 );
                             }
@@ -244,10 +244,10 @@ const PlaybookSection: React.FC<PlaybookSectionProps> = ({ docType, title, uploa
                             dataIndex: 'status',
                             key: 'status',
                             render: (status) => {
-                                let color = '#f8f9fa'; let textColor = '#667085'; let borderColor = 'rgba(198,198,205,0.4)';
-                                if (status === 'active') { color = '#10b981'; textColor = '#fff'; borderColor = '#10b981'; }
-                                if (status === 'processing') { color = '#f59e0b'; textColor = '#fff'; borderColor = '#f59e0b'; }
-                                return <Tag color={color} style={{ color: textColor, border: `1px solid ${borderColor}`, borderRadius: '4px', fontWeight: 600 }}>{status.toUpperCase()}</Tag>;
+                                let bgColor = '#f8f9fa'; let textColor = '#667085'; let borderColor = 'rgba(198,198,205,0.4)';
+                                if (status === 'active') { bgColor = '#ecfdf5'; textColor = '#047857'; borderColor = '#047857'; }
+                                if (status === 'processing') { bgColor = '#fffbeb'; textColor = '#b45309'; borderColor = '#b45309'; }
+                                return <Tag style={{ backgroundColor: bgColor, color: textColor, border: `1px solid ${borderColor}`, borderRadius: '4px', fontWeight: 600 }}>{status.toUpperCase()}</Tag>;
                             }
                         },
                         {
