@@ -21,17 +21,17 @@ const { Text } = Typography;
 
 const getBadgeColor = (status: string): string => {
     const colors: Record<string, string> = {
-        draft: '#e0e3e5',       // surface-variant
-        review: '#24303a',      // primary_container
-        processing: '#667085',  // secondary
-        update: '#768599',      // tertiary_container
-        negotiation: '#1f2933', // tertiary_fixed
-        manager_review: '#bcc7de', // inverse_primary
-        approval: '#10b981',    // Emerald
-        signing: '#24303a',     // primary
-        active: '#10b981',      // Emerald
-        expired: '#ba1a1a',     // error
-        terminated: '#93000a',  // on_error_container
+        draft: '#64748B',       // slate
+        review: '#EAB308',      // yellow
+        processing: '#3B82F6',  // blue
+        update: '#F59E0B',      // amber
+        negotiation: '#8B5CF6', // violet
+        manager_review: '#06B6D4', // cyan
+        approval: '#10B981',    // emerald
+        signing: '#0EA5E9',     // sky
+        active: '#22C55E',      // green
+        expired: '#EF4444',     // red
+        terminated: '#991B1B',  // dark red
     };
     return colors[status] || '#76777d';
 };
@@ -317,7 +317,7 @@ const ContractListPage: React.FC = () => {
                     color: getBadgeColor(status),
                     backgroundColor: `${getBadgeColor(status)}1A`,
                     padding: '4px 8px',
-                    borderRadius: '4px',
+                    borderRadius: '6px',
                     fontSize: '12px',
                     fontWeight: 600,
                     textTransform: 'uppercase',
@@ -414,10 +414,6 @@ const ContractListPage: React.FC = () => {
                         <Option value="draft">Draft</Option>
                         <Option value="review">Review</Option>
                         <Option value="update">Update</Option>
-                        <Option value="negotiation">Negotiation</Option>
-                        <Option value="manager_review">Manager Review</Option>
-                        <Option value="approval">Approval</Option>
-                        <Option value="signing">Signing</Option>
                     </Select>
                 </div>
 
