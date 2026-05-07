@@ -721,13 +721,7 @@ const ContractDetailPageContent: React.FC = () => {
                             📋 Negotiation
                         </Button>
                     </Tooltip>
-                    {/* Debug: Section pairs – available for all analyzed contracts */}
-                    <Button
-                        id="debug-section-pairs-btn"
-                        onClick={() => setSectionPairsVisible(true)}
-                    >
-                        🔍 Debug Pairs
-                    </Button>
+
                     <Button icon={<CloudDownloadOutlined />} onClick={handleDownload} type="primary">
                         Download DOCX
                     </Button>
