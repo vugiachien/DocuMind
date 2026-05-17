@@ -1,103 +1,299 @@
-# demo-contract-review
+# DocuMind — Hệ thống Rà soát Hợp đồng Thông minh
 
-## Getting started
-
-To make it easy for you to get started with GitLab, here's a list of recommended next steps.
-
-Already a pro? Just edit this README.md and make it your own. Want to make it easy? [Use the template at the bottom](#editing-this-readme)!
-
-## Add your files
-
-- [ ] [Create](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#create-a-file) or [upload](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#upload-a-file) files
-- [ ] [Add files using the command line](https://docs.gitlab.com/ee/gitlab-basics/add-file.html#add-a-file-using-the-command-line) or push an existing Git repository with the following command:
-
-```
-cd existing_repo
-git remote add origin https://git.haui.vn/ai_team/demo-contract-review.git
-git branch -M main
-git push -uf origin main
-```
-
-## Integrate with your tools
-
-- [ ] [Set up project integrations](https://git.haui.vn/ai_team/demo-contract-review/-/settings/integrations)
-
-## Collaborate with your team
-
-- [ ] [Invite team members and collaborators](https://docs.gitlab.com/ee/user/project/members/)
-- [ ] [Create a new merge request](https://docs.gitlab.com/ee/user/project/merge_requests/creating_merge_requests.html)
-- [ ] [Automatically close issues from merge requests](https://docs.gitlab.com/ee/user/project/issues/managing_issues.html#closing-issues-automatically)
-- [ ] [Enable merge request approvals](https://docs.gitlab.com/ee/user/project/merge_requests/approvals/)
-- [ ] [Set auto-merge](https://docs.gitlab.com/ee/user/project/merge_requests/merge_when_pipeline_succeeds.html)
-
-## Test and Deploy
-
-Use the built-in continuous integration in GitLab.
-
-- [ ] [Get started with GitLab CI/CD](https://docs.gitlab.com/ee/ci/quick_start/index.html)
-- [ ] [Analyze your code for known vulnerabilities with Static Application Security Testing (SAST)](https://docs.gitlab.com/ee/user/application_security/sast/)
-- [ ] [Deploy to Kubernetes, Amazon EC2, or Amazon ECS using Auto Deploy](https://docs.gitlab.com/ee/topics/autodevops/requirements.html)
-- [ ] [Use pull-based deployments for improved Kubernetes management](https://docs.gitlab.com/ee/user/clusters/agent/)
-- [ ] [Set up protected environments](https://docs.gitlab.com/ee/ci/environments/protected_environments.html)
+> **Đồ án tốt nghiệp**
+> Đại học Công nghiệp Hà Nội — Trường Công nghệ Thông tin và Truyền thông
 
 ---
 
-# Editing this README
+## Mục lục
 
-When you're ready to make this README your own, just edit this file and use the handy template below (or feel free to structure it however you want - this is just a starting point!). Thanks to [makeareadme.com](https://www.makeareadme.com/) for this template.
+1. [Giới thiệu](#1-giới-thiệu)
+2. [Tính năng chính](#2-tính-năng-chính)
+3. [Kiến trúc hệ thống](#3-kiến-trúc-hệ-thống)
+4. [Công nghệ sử dụng](#4-công-nghệ-sử-dụng)
+5. [Cấu trúc thư mục](#5-cấu-trúc-thư-mục)
+6. [Hướng dẫn cài đặt & chạy](#6-hướng-dẫn-cài-đặt--chạy)
+7. [Biến môi trường](#7-biến-môi-trường)
+8. [CI/CD & Triển khai](#8-cicd--triển-khai)
+9. [Nhóm thực hiện](#9-nhóm-thực-hiện)
 
-## Suggestions for a good README
+---
 
-Every project is different, so consider which of these sections apply to yours. The sections used in the template are suggestions for most open source projects. Also keep in mind that while a README can be too long and detailed, too long is better than too short. If you think your README is too long, consider utilizing another form of documentation rather than cutting out information.
+## 1. Giới thiệu
 
-## Name
+**DocuMind** là một nền tảng web hỗ trợ rà soát hợp đồng tự động ứng dụng trí tuệ nhân tạo (AI). Hệ thống cho phép người dùng tải lên văn bản hợp đồng (PDF, DOCX), sau đó tự động phân tích và phát hiện các rủi ro pháp lý, điều khoản bất lợi, thiếu sót so với mẫu chuẩn hoặc bộ quy tắc kiểm soát (Playbook) được định nghĩa sẵn.
 
-Choose a self-explaining name for your project.
+Điểm cốt lõi của hệ thống là pipeline AI sử dụng kỹ thuật **RAG (Retrieval-Augmented Generation)** kết hợp **Large Language Model (LLM)**, cho phép:
 
-## Description
+- So khớp từng điều khoản hợp đồng với bộ quy tắc liên quan nhất trong cơ sở tri thức.
+- Phát hiện mâu thuẫn thực thể (tên công ty, mã số thuế, đại diện ký kết).
+- Chỉ ra các điều khoản bắt buộc còn thiếu.
+- So sánh hợp đồng với mẫu chuẩn để tìm sai lệch.
 
-Let people know what your project can do specifically. Provide context and add a link to any reference visitors might be unfamiliar with. A list of Features or a Background subsection can also be added here. If there are alternatives to your project, this is a good place to list differentiating factors.
+---
 
-## Badges
+## 2. Tính năng chính
 
-On some READMEs, you may see small images that convey metadata, such as whether or not all the tests are passing for the project. You can use Shields to add some to your README. Many services also have instructions for adding a badge.
+### Quản lý Hợp đồng
+- Upload hợp đồng dạng PDF hoặc DOCX; xem trước trực tiếp trên trình duyệt.
+- Quản lý vòng đời hợp đồng: Draft → Pending Review → Reviewed → Signed / Rejected.
+- Soft-delete với khả năng khôi phục (chỉ Admin).
+- Chia sẻ hợp đồng theo người dùng hoặc phòng ban với phân quyền `view` / `edit`.
+- Hệ thống bình luận nội bộ (platform comment) gắn vào từng hợp đồng.
 
-## Visuals
+### Phân tích AI (RAG Pipeline)
+- **Rule-based analysis**: so khớp điều khoản với quy tắc trong Playbook qua vector search (ChromaDB / Milvus).
+- **Template-based analysis**: phát hiện sai lệch so với hợp đồng mẫu.
+- **Entity conflict detection**: phát hiện mâu thuẫn thông tin thực thể trong toàn bộ văn bản.
+- **Missing clause detection**: xác định điều khoản bắt buộc còn thiếu theo loại hợp đồng.
+- Kết quả phân tích phân loại theo mức độ rủi ro: `critical`, `high`, `medium`, `low`.
+- Gợi ý sửa đổi điều khoản và chỉnh sửa trực tiếp trong giao diện (rich-text editor).
 
-Depending on what you are making, it can be a good idea to include screenshots or even a video (you'll frequently see GIFs rather than actual videos). Tools like ttygif can help, but check out Asciinema for a more sophisticated method.
+### Quản lý Playbook (Bộ quy tắc kiểm soát)
+- Upload file Playbook (PDF, DOCX, TXT); hệ thống tự động trích xuất quy tắc bằng LLM.
+- Nhúng quy tắc vào vector database phục vụ tìm kiếm ngữ nghĩa.
+- Liên kết Playbook với loại hợp đồng cụ thể.
 
-## Installation
+### Quản lý người dùng & tổ chức
+- Xác thực JWT; phân quyền Admin / User.
+- Quản lý phòng ban; gán người dùng vào phòng ban.
+- Quản lý avatar người dùng (lưu trữ MinIO).
+- Nhật ký kiểm tra (Audit log) cho mọi hành động trên hợp đồng.
 
-Within a particular ecosystem, there may be a common way of installing things, such as using Yarn, NuGet, or Homebrew. However, consider the possibility that whoever is reading your README is a novice and would like more guidance. Listing specific steps helps remove ambiguity and gets people to using your project as quickly as possible. If it only runs in a specific context like a particular programming language version or operating system or has dependencies that have to be installed manually, also add a Requirements subsection.
+### Dashboard & Báo cáo
+- Thống kê tổng quan: số lượng hợp đồng theo trạng thái, theo đối tác, theo loại.
+- Biểu đồ phân bổ rủi ro.
 
-## Usage
+---
 
-Use examples liberally, and show the expected output if you can. It's helpful to have inline the smallest example of usage that you can demonstrate, while providing links to more sophisticated examples if they are too long to reasonably include in the README.
+## 3. Kiến trúc hệ thống
 
-## Support
+```
+┌─────────────────────────────────────────────────────────┐
+│                       Client Browser                     │
+│              React 18 + Ant Design + Vite                │
+└───────────────────────────┬─────────────────────────────┘
+                            │ HTTP / REST API
+┌───────────────────────────▼─────────────────────────────┐
+│                  Backend (Monolith)                       │
+│              FastAPI + SQLAlchemy + Celery                │
+│                                                           │
+│  ┌──────────────┐  ┌─────────────┐  ┌─────────────────┐ │
+│  │  REST API    │  │  AI Engine  │  │  Celery Worker  │ │
+│  │  (routers)   │  │  RAG/LLM    │  │  (async tasks)  │ │
+│  └──────┬───────┘  └──────┬──────┘  └────────┬────────┘ │
+└─────────┼─────────────────┼───────────────────┼──────────┘
+          │                 │                   │
+   ┌──────▼──────┐  ┌───────▼───────┐  ┌───────▼───────┐
+   │  PostgreSQL │  │  ChromaDB /   │  │     Redis     │
+   │  (metadata) │  │  Milvus       │  │  (task queue) │
+   └─────────────┘  │  (vectors)    │  └───────────────┘
+                    └───────┬───────┘
+                            │
+                    ┌───────▼───────┐
+                    │     MinIO     │
+                    │  (file store) │
+                    └───────────────┘
+```
 
-Tell people where they can go to for help. It can be any combination of an issue tracker, a chat room, an email address, etc.
+**Luồng phân tích hợp đồng:**
 
-## Roadmap
+```
+Upload file ──► Parse DOCX/PDF ──► Chia section
+    ──► Embed section (Sentence Transformers)
+    ──► Vector Search (top-k rules từ Playbook)
+    ──► LLM phân tích từng section + matched rules
+    ──► Aggregate: entity conflict + missing clauses
+    ──► Lưu kết quả Finding vào PostgreSQL
+    ──► Trả về UI
+```
 
-If you have ideas for releases in the future, it is a good idea to list them in the README.
+---
 
-## Contributing
+## 4. Công nghệ sử dụng
 
-State if you are open to contributions and what your requirements are for accepting them.
+| Tầng | Công nghệ |
+|---|---|
+| Frontend | React 18, TypeScript, Vite, Ant Design 6, TailwindCSS 4, TinyMCE |
+| Backend API | Python 3.11+, FastAPI, SQLAlchemy 2, Alembic, Pydantic v2 |
+| AI / NLP | OpenAI API (LLM), Sentence Transformers, ChromaDB, Milvus |
+| Document parsing | pdfplumber, python-docx, mammoth, pdf2docx |
+| Task queue | Celery, Redis |
+| Database | PostgreSQL 15 |
+| File storage | MinIO (S3-compatible) |
+| Containerization | Docker, Docker Compose |
+| CI/CD | GitLab CI/CD |
 
-For people who want to make changes to your project, it's helpful to have some documentation on how to get started. Perhaps there is a script that they should run or some environment variables that they need to set. Make these steps explicit. These instructions could also be useful to your future self.
+---
 
-You can also document commands to lint the code or run tests. These steps help to ensure high code quality and reduce the likelihood that the changes inadvertently break something. Having instructions for running tests is especially helpful if it requires external setup, such as starting a Selenium server for testing in a browser.
+## 5. Cấu trúc thư mục
 
-## Authors and acknowledgment
+```
+DocuMind/
+├── backend/                    # FastAPI backend + AI engine
+│   ├── app/
+│   │   ├── api/                # Shared API utilities
+│   │   ├── core/               # Config, auth, middleware, rate limiter
+│   │   ├── db/                 # SQLAlchemy models, migrations
+│   │   ├── modules/            # Business logic theo domain
+│   │   │   ├── agreements/     # Hợp đồng (CRUD, share, comment)
+│   │   │   ├── audit_policies/ # Playbook (upload, extract rules)
+│   │   │   ├── departments/    # Phòng ban
+│   │   │   ├── notifications/  # Thông báo nội bộ
+│   │   │   └── users/          # Auth, user management
+│   │   ├── services/
+│   │   │   ├── ai/             # RAG pipeline, LLM client, vector store
+│   │   │   ├── storage_service.py   # MinIO adapter
+│   │   │   ├── document_service.py  # DOCX text replacement
+│   │   │   └── audit_service.py     # Audit logging
+│   │   └── tasks/              # Celery async tasks
+│   ├── Dockerfile
+│   └── requirements.txt
+│
+├── frontend/                   # React SPA
+│   ├── src/
+│   │   ├── pages/
+│   │   │   ├── contracts/      # Danh sách, chi tiết, tạo hợp đồng
+│   │   │   ├── library/        # Playbook & contract type management
+│   │   │   ├── dashboard/      # Trang tổng quan
+│   │   │   ├── partners/       # Quản lý đối tác
+│   │   │   ├── settings/       # Cài đặt người dùng
+│   │   │   └── admin/          # Trang quản trị
+│   │   ├── components/         # UI components dùng chung
+│   │   ├── services/           # Axios API clients
+│   │   ├── contexts/           # React context (auth, ...)
+│   │   └── types/              # TypeScript type definitions
+│   └── Dockerfile
+│
+├── docker-compose.yml          # Môi trường phát triển local
+├── docker-compose.prod.yml     # Môi trường production
+├── .gitlab-ci.yml              # CI/CD pipeline
+└── deploy.sh                   # Script deploy lên server
+```
 
-Show your appreciation to those who have contributed to the project.
+---
 
-## License
+## 6. Hướng dẫn cài đặt & chạy
 
-For open source projects, say how it is licensed.
+### Yêu cầu
+- Docker >= 24 và Docker Compose v2
+- OpenAI API key (hoặc compatible endpoint)
+- MinIO instance (hoặc dùng container trong docker-compose)
 
-## Project status
+### Chạy toàn bộ hệ thống bằng Docker Compose
 
-If you have run out of energy or time for your project, put a note at the top of the README saying that development has slowed down or stopped completely. Someone may choose to fork your project or volunteer to step in as a maintainer or owner, allowing your project to keep going. You can also make an explicit request for maintainers.
+```bash
+# 1. Clone repository
+git clone <repo-url>
+cd DocuMind
+
+# 2. Tạo file .env từ mẫu
+cp backend/.env.example backend/.env
+# Điền các biến cần thiết (xem mục 7)
+
+# 3. Khởi động hạ tầng (PostgreSQL, Redis, MinIO)
+bash run_infrastructure.sh
+
+# 4. Khởi động backend
+bash run_backend_local.sh
+
+# 5. Khởi động worker Celery
+bash run_worker_local.sh
+
+# 6. Khởi động frontend
+bash run_frontend_local.sh
+```
+
+Hoặc chạy tất cả cùng lúc:
+
+```bash
+bash run_all_local.sh
+```
+
+**Hoặc dùng Docker Compose (production-like):**
+
+```bash
+docker compose up --build
+```
+
+| Dịch vụ | URL mặc định |
+|---|---|
+| Frontend | http://localhost:5175 |
+| Backend API | http://localhost:8012 |
+| API Docs (Swagger) | http://localhost:8012/docs |
+| MinIO Console | http://localhost:9001 |
+
+### Chạy từng phần (không dùng Docker)
+
+```bash
+# Backend
+cd backend
+python -m venv .venv && source .venv/bin/activate
+pip install -r requirements.txt
+uvicorn app.main:app --reload --port 8000
+
+# Frontend
+cd frontend
+npm install
+npm run dev
+```
+
+---
+
+## 7. Biến môi trường
+
+Tạo file `backend/.env` với các biến sau:
+
+```env
+# Database
+DATABASE_URL=postgresql://user:password@localhost:5436/documind_db
+
+# Redis / Celery
+REDIS_URL=redis://localhost:6390/0
+CELERY_BROKER_URL=redis://localhost:6390/0
+
+# LLM (OpenAI-compatible)
+OPENAI_API_KEY=sk-...
+OPENAI_API_BASE=https://api.openai.com/v1
+OPENAI_MODEL=gpt-4o
+
+# MinIO (file storage)
+MINIO_ENDPOINT=localhost:9000
+MINIO_ACCESS_KEY=minioadmin
+MINIO_SECRET_KEY=minioadmin
+MINIO_BUCKET=documind
+MINIO_USE_SSL=false
+
+# App
+SECRET_KEY=your-secret-key-here
+ENVIRONMENT=development
+DEBUG=true
+```
+
+---
+
+## 8. CI/CD & Triển khai
+
+Pipeline GitLab CI gồm 2 stage:
+
+```
+build (parallel)          deploy
+─────────────────         ──────────────────────────────
+build-backend    ─┐
+build-frontend   ─┼──►   deploy-dev (SSH + docker compose)
+build-ai-service ─┘
+```
+
+- **Trigger**: push lên nhánh `develop`.
+- **Build**: Docker image được build với BuildKit cache, push lên GitLab Container Registry.
+- **Deploy**: rsync `docker-compose.prod.yml` lên server, kéo image mới và restart container.
+
+---
+
+## 9. Thông tin đồ án
+
+| | |
+|---|---|
+| **Sinh viên thực hiện** | Vũ Gia Chiến |
+| **Giảng viên hướng dẫn** | *(bổ sung)* |
+| **Năm thực hiện** | 2025 – 2026 |
